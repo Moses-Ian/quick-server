@@ -2,17 +2,17 @@ const inquirer = require('inquirer');
 const generateFiles = require('./utils/generateFiles');
 
 const questions = [
-	// {
-		// type: 'input',
-		// name: 'projectName',
-		// message: 'What is the project name?',
-		// validate: input => {
-			// if (/^[\w-_]+$/.test(input))
-				// return true;
-			// console.log('Project name must be alphanumeric! Dashes and underscores are ok.');
-			// return false;
-		// }
-	// },
+	{
+		type: 'input',
+		name: 'projectName',
+		message: 'What is the project name?',
+		validate: input => {
+			if (/^[\w-_]+$/.test(input))
+				return true;
+			console.log('Project name must be alphanumeric! Dashes and underscores are ok.');
+			return false;
+		}
+	},
 	{
 		type: 'list',
 		name: 'server',

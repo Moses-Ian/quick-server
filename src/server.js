@@ -2,7 +2,12 @@ const express =
 `const express = require('express');
 const routes = require('./routes');
 const path = require('path');
-const helpers = require('./utils/helpers');`
+const helpers = require('./utils/helpers');`;
+
+const sql = 
+`
+const db = require('./db/connection');`;
+
 /*
 const sequelize = require('./config/connection');
 const exphbs = require('express-handlebars');
@@ -71,5 +76,6 @@ module.exports = {
 	express2,
 	express3,
 	express4,
-	express5
+	express5,
+	sql
 };
