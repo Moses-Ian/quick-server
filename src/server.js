@@ -8,8 +8,10 @@ const sql =
 `
 const db = require('./db/connection');`;
 
+const sequelize =
+`
+const sequelize = require('./config/connection');`
 /*
-const sequelize = require('./config/connection');
 const exphbs = require('express-handlebars');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
@@ -56,14 +58,14 @@ app.use(routes);`;
 const hbs = exphbs.create({ helpers });
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-
-// turn on connection to db and server
-sequelize.sync({ force: false })
-	.then(() => 
-		app.listen(PORT, () => console.log(`Now listening on port ${PORT}`))
-	)
-	.catch(err => console.log(err));
-	*/
+*/
+const sequelize2 =
+'\n\n\
+sequelize.sync({ force: false })\n\
+	.then(() => \n\
+		app.listen(PORT, () => console.log(`Server running on port ${PORT}`))\n\
+	)\n\
+	.catch(err => console.error(err));'
 	
 const express5 = 
 '\n\n\
@@ -77,5 +79,7 @@ module.exports = {
 	express3,
 	express4,
 	express5,
-	sql
+	sql,
+	sequelize,
+	sequelize2
 };
