@@ -16,6 +16,9 @@ const mongo =
 `
 const client = require('./config/connection');`;
 
+const mongoose =
+`
+const mongoose = require('./config/connection');`;
 
 /*
 const exphbs = require('express-handlebars');
@@ -97,5 +100,6 @@ module.exports = {
 	sequelize,
 	sequelize2,
 	mongo,
-	mongo2
+	mongo2,
+	mongoose
 };

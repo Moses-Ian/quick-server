@@ -13,7 +13,7 @@ const env = '.env';
 
 function generateFiles(answers) {
 	//develop
-	answers.projectName = 'deck-builder';
+	// answers.projectName = 'deck-builder';
 	//end develop
 	console.log(answers);
 	
@@ -22,19 +22,19 @@ function generateFiles(answers) {
 	const db = answers.projectName.split('-').join('_').concat('_db');
 	
 	// create the output directory
-	// if (!fs.existsSync(dist))
-		// fs.mkdirSync(dist);
-	// fs.rmdirSync(dir, { recursive: true });
-	// fs.mkdirSync(dir)
+	if (!fs.existsSync(dist))
+		fs.mkdirSync(dist);
+	fs.rmdirSync(dir, { recursive: true });
+	fs.mkdirSync(dir)
 	
 	// create .gitignore, README.md, .env, helpers
-	// copyFile(`${src}/${gitignore}`, `${dir}/${gitignore}`);
-	// writeFile(`${dir}/${readme}`, `# ${name}`);
-	// if (answers.database !== 'None') {
-		// readThenWrite(`${src}/${env}`, `${dir}/${env}`, db);
-	// }
-	// fs.mkdirSync(`${dir}/utils`);
-	// copyFile(`${src}/helpers.js`, `${dir}/utils/helpers.js`);
+	copyFile(`${src}/${gitignore}`, `${dir}/${gitignore}`);
+	writeFile(`${dir}/${readme}`, `# ${name}`);
+	if (answers.database !== 'None') {
+		readThenWrite(`${src}/${env}`, `${dir}/${env}`, db);
+	}
+	fs.mkdirSync(`${dir}/utils`);
+	copyFile(`${src}/helpers.js`, `${dir}/utils/helpers.js`);
 	
 	// create server.js
 	let serverOut = '';
@@ -46,12 +46,14 @@ function generateFiles(answers) {
 			serverOut += server.sequelize;
 		if (answers.database === 'MongoDB' && answers.odm === 'None')
 			serverOut += server.mongo;
+		if (answers.database === 'MongoDB' && answers.odm === 'mongoose')
+			serverOut += server.mongoose;
 		serverOut += server.express2;
 		serverOut += server.express3;
 		if (answers.database === 'MongoDB' && answers.odm === 'None')
 			serverOut += server.mongo2;
 		serverOut += server.express4;
-		if (answers.database === 'None' || (answers.database === 'MongoDB' && answers.odm === 'None'))
+		if (answers.database === 'None' || answers.database === 'MongoDB')
 			serverOut += server.express5;
 		if (answers.database === 'MySQL' && answers.orm === 'sequelize')
 			serverOut += server.sequelize2
@@ -62,9 +64,14 @@ function generateFiles(answers) {
 
 	writeFile(`${dir}/server.js`, serverOut);
 
+
+
+
+
+
 	// create connection.js
-	// fs.mkdirSync(`${dir}/config`);
-	// fs.mkdirSync(`${dir}/db`);
+	fs.mkdirSync(`${dir}/config`);
+	fs.mkdirSync(`${dir}/db`);
 	let connectionOut = '';
 	if (answers.database === 'MySQL') {
 		if (answers.orm === 'None')
@@ -74,7 +81,9 @@ function generateFiles(answers) {
 		writeFile(`${dir}/db/db.sql`, dbFile(db));
 	}
 	if (answers.database === 'MongoDB' && answers.odm === 'None')
-		connectionOut = connection.mongo;
+		connectionOut = connection.mongo(db);
+	if (answers.database === 'MongoDB' && answers.odm === 'mongoose')
+		connectionOut = connection.mongoose(db);
 		
 	
 	
