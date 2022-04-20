@@ -1,0 +1,14 @@
+{
+  "name": "quick-server",
+  "version": "1.0.0",
+  "description": "Quickly generate a server based on prompts",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Ian Moses",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^8.2.2"
+  }
+}
