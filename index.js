@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+const generateFiles = require('./utils/generateFiles');
 
 const questions = [
 	{
@@ -60,5 +61,5 @@ const questions = [
 const promptUser = () => inquirer.prompt(questions);
 
 promptUser()
-	.then(answers => console.log(answers))
+	.then(generateFiles)
 	.catch(err => console.error(err));
