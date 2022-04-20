@@ -29,7 +29,19 @@ if (process.env.JAWSDB_URL) {
 
 module.exports = sequelize;`;
 
+const mongo = 
+"const {MongoClient} = require('mongodb'); \n\
+//require('dotenv').config(); \n\
+\n\
+const uri = 'mongodb://127.0.0.1:27017'; \n\
+//const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PW}@cluster0.gb1vu.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`; \n\
+const client = new MongoClient(uri); \n\
+client.connect(); \n\
+\n\
+module.exports = client;";
+
 module.exports = {
 	mysql,
-	sequelize
+	sequelize,
+	mongo
 };

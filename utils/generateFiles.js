@@ -38,22 +38,24 @@ function generateFiles(answers) {
 	
 	// create server.js
 	let serverOut = '';
-	if (answers.server === 'Express')
+	if (answers.server === 'Express') {
 		serverOut += server.express;
-	if (answers.database === 'MySQL' && answers.orm === 'None')
-		serverOut += server.sql;
-	if (answers.database === 'MySQL' && answers.orm === 'sequelize')
-		serverOut += server.sequelize;
-	if (answers.server === 'Express')
+		if (answers.database === 'MySQL' && answers.orm === 'None')
+			serverOut += server.sql;
+		if (answers.database === 'MySQL' && answers.orm === 'sequelize')
+			serverOut += server.sequelize;
+		if (answers.database === 'MongoDB' && answers.odm === 'None')
+			serverOut += server.mongo;
 		serverOut += server.express2;
-	if (answers.server === 'Express')
 		serverOut += server.express3;
-	if (answers.server === 'Express')
+		if (answers.database === 'MongoDB' && answers.odm === 'None')
+			serverOut += server.mongo2;
 		serverOut += server.express4;
-	if (answers.server === 'Express' && answers.database === 'None')
-		serverOut += server.express5;
-	if (answers.server === 'Express' && answers.database === 'MySQL' && answers.orm === 'sequelize')
-		serverOut += server.sequelize2
+		if (answers.database === 'None' || (answers.database === 'MongoDB' && answers.odm === 'None'))
+			serverOut += server.express5;
+		if (answers.database === 'MySQL' && answers.orm === 'sequelize')
+			serverOut += server.sequelize2
+	}
 	
 
 
@@ -71,6 +73,8 @@ function generateFiles(answers) {
 			connectionOut = connection.sequelize;
 		writeFile(`${dir}/db/db.sql`, dbFile(db));
 	}
+	if (answers.database === 'MongoDB' && answers.odm === 'None')
+		connectionOut = connection.mongo;
 		
 	
 	

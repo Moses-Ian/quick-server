@@ -6,11 +6,17 @@ const helpers = require('./utils/helpers');`;
 
 const sql = 
 `
-const db = require('./db/connection');`;
+const db = require('./config/connection');`;
 
 const sequelize =
 `
-const sequelize = require('./config/connection');`
+const sequelize = require('./config/connection');`;
+
+const mongo =
+`
+const client = require('./config/connection');`;
+
+
 /*
 const exphbs = require('express-handlebars');
 const session = require('express-session');
@@ -48,6 +54,14 @@ app.use(express.urlencoded({ extended: true }));`;
 app.use(express.static(path.join(__dirname, 'public')));
 */
 
+const mongo2 =
+`
+
+app.use((req, res, next) => {
+	req.client = client;
+	next();
+});`;
+
 const express4 =
 `
 
@@ -81,5 +95,7 @@ module.exports = {
 	express5,
 	sql,
 	sequelize,
-	sequelize2
+	sequelize2,
+	mongo,
+	mongo2
 };
