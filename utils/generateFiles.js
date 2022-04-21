@@ -114,6 +114,21 @@ function generateFiles(answers) {
 		answers.pages.forEach(page => writeFile(`${dir}/views/${page.page}.handlebars`, ''));
 	}
 	
+	// output model files
+	if (answers.database === 'MySQL') {
+		if (answers.orm === 'sequelize') {
+			
+		} else {
+			
+		}
+	}
+	if (answers.database === 'MongoDB') {
+		if (answers.odm === 'mongoose') {
+			
+		} else {
+			
+		}
+	}
 	
 }
 

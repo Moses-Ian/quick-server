@@ -71,8 +71,22 @@ const addModelQuestion = [
 		type: 'input',
 		name: 'model',
 		message: 'What is the name of a MODEL you would like to add?\n (Leave blank when done adding models)'
+	},
+	{
+		type: 'checkbox',
+		name: 'userProperties',
+		message: 'USER MODEL DETECTED\nDo you want any of these defaults?',
+		choices: [
+			{name: 'id', checked: true},
+			{name: 'username', checked: true},
+			{name: 'email', checked: true},
+			{name: 'password', checked: true},
+			{name: 'bcrypt', checked: true},
+			{name: 'login routes', checked: true}
+		],
+		when: (answers) => answers.model.trim().toLowerCase() === 'user'
 	}
-];
+]
 
 const promptUser = () => inquirer.prompt(questions);
 
