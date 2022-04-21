@@ -50,11 +50,17 @@ function generateFiles(answers) {
 			serverOut += server.mongo;
 		if (answers.database === 'MongoDB' && answers.odm === 'mongoose')
 			serverOut += server.mongoose;
+		if (answers.view === 'Handlebars')
+			serverOut += server.handlebars;
 		serverOut += server.express2;
 		serverOut += server.express3;
+		if (answers.view !== 'None')
+			serverOut += server.html;
 		if (answers.database === 'MongoDB' && answers.odm === 'None')
 			serverOut += server.mongo2;
 		serverOut += server.express4;
+		if (answers.view === 'Handlebars')
+			serverOut += server.handlebars2;
 		if (answers.database === 'None' || answers.database === 'MongoDB')
 			serverOut += server.express5;
 		if (answers.database === 'MySQL' && answers.orm === 'sequelize')
@@ -90,13 +96,16 @@ function generateFiles(answers) {
 		copyFile(`${src}/style.css`, `${dir}/public/assets/css/style.css`);
 		copyFile(`${src}/script.js`, `${dir}/public/assets/js/script.js`);
 	}
-	if (answers.view === 'HTML') 
+	if (answers.view === 'HTML') {
 		writeFile(`${dir}/public/index.html`, indexHTMLFile.html(name));
+		answers.pages.forEach(page =>	writeFile(`${dir}/public/${page.page}.html`, indexHTMLFile.html(name)));
+	}
 	if (answers.view === 'Handlebars') {
-		fs.mkdirSync(view);
-		fs.mkdirSync(`${view}/layouts`);
-		fs.mkdirSync(`${view}/partials`);
+		// fs.mkdirSync(view);
+		// fs.mkdirSync(`${view}/layouts`);
+		// fs.mkdirSync(`${view}/partials`);
 		writeFile(`${view}/layouts/main.handlebars`, indexHTMLFile.handlebars(name));
+		answers.pages.forEach(page => writeFile(`${dir}/views/${page.page}.handlebars`, ''));
 	}
 	
 	

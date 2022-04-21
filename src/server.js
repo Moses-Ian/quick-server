@@ -20,8 +20,11 @@ const mongoose =
 `
 const mongoose = require('./config/connection');`;
 
+const handlebars =
+`
+const exphbs = require('express-handlebars');`
+
 /*
-const exphbs = require('express-handlebars');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 */
@@ -53,9 +56,10 @@ const express3 =
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));`;
 
-/*
-app.use(express.static(path.join(__dirname, 'public')));
-*/
+const html =
+`
+app.use(express.static(path.join(__dirname, 'public')));`
+
 
 const mongo2 =
 `
@@ -70,12 +74,15 @@ const express4 =
 
 app.use(routes);`;
 
-/*
-// use handlebars
+
+const handlebars2 =
+`
+
 const hbs = exphbs.create({ helpers });
 app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
-*/
+app.set('view engine', 'handlebars');`;
+
+
 const sequelize2 =
 '\n\n\
 sequelize.sync({ force: false })\n\
@@ -101,5 +108,8 @@ module.exports = {
 	sequelize2,
 	mongo,
 	mongo2,
-	mongoose
+	mongoose,
+	html,
+	handlebars,
+	handlebars2
 };

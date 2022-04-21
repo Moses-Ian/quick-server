@@ -58,8 +58,78 @@ const questions = [
 	}
 ];
 
+const addPageQuestion = [
+	{
+		type: 'input',
+		name: 'page',
+		message: 'What is the title of a page you would like to add?\n (Leave blank when done adding pages)'
+	}
+];
+
 const promptUser = () => inquirer.prompt(questions);
 
 promptUser()
+	.then(async answers => {
+		if (answers.view === 'None')
+			return answers;
+		answers.pages = [];
+		while(true) {
+			let pageAnswer = await inquirer.prompt(addPageQuestion);
+			if (pageAnswer.page === '')
+				break;
+			answers.pages.push(pageAnswer);
+		}
+		return answers;
+	})
 	.then(generateFiles)
 	.catch(err => console.error(err));
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
