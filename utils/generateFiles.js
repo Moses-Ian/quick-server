@@ -170,8 +170,14 @@ function generateFiles(answers) {
 	if (answers.database === 'MongoDB') {
 		if (answers.odm === 'mongoose') {
 			//base
+			answers.models.forEach(m => 
+				writeFile(`${model}/${m.model}.js`, modelFile.mongoose(m.model)));
 			//user
+			if (userModel)
+				writeFile(`${model}/User.js`, modelFile.mongooseUser(userModel));
 			//index
+			answers.models.unshift(userModel);
+			writeFile(`${model}/index.js`, modelFile.getIndex(answers.models));
 			//seed index
 			//seed data
 		} else {
@@ -191,8 +197,8 @@ function generateFiles(answers) {
 
 const answers = {
 	server: 'Express',
-	database: 'MySQL',
-	orm: 'sequelize',
+	database: 'MongoDB',
+	odm: 'mongoose',
 	view: 'None',
 	utilities: ['Session'],
 	models: [
