@@ -5,6 +5,7 @@ const connection = require('../src/connection');
 const dbFile = require('../src/db');
 const indexHTMLFile = require('../src/index-html.js');
 const modelFile = require('../src/model.js');
+const seedFile = require('../src/seeds.js');
 
 const dist = './dist';
 const src = './src';
@@ -18,7 +19,6 @@ function generateFiles(answers) {
 	answers.projectName = 'deck-builder';
 	//end develop
 	console.log(answers);
-	console.log(answers.models[0].userProperties);
 	
 	const dir = `${dist}/${answers.projectName}`;
 	const name = answers.projectName.split(/[-_]/).map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
@@ -153,28 +153,31 @@ function generateFiles(answers) {
 				writeFile(`${model}/User.js`, modelFile.sequelizeUser(userModel));
 			//index
 			answers.models.unshift(userModel);
-			modelFile.writeModelIndex(`${model}/index.js`, answers.models);
+			writeFile(`${model}/index.js`, modelFile.getIndex(answers.models));
 			//seed index
+			writeFile(`${dir}/db/seeds/index.js`, seedFile.sequelizeIndex(answers.models));
 			//seed data
+			answers.models.forEach(m => 
+				writeFile(`${dir}/db/seeds/${m.model.toLowerCase()}Data.js`, seedFile.sequelize(m.model)));
 		} else {
-			//index
 			//base
 			//user
+			//index
 			//seed index
 			//seed data
 		}
 	}
 	if (answers.database === 'MongoDB') {
 		if (answers.odm === 'mongoose') {
-			//index
 			//base
 			//user
+			//index
 			//seed index
 			//seed data
 		} else {
-			//index
 			//base
 			//user
+			//index
 			//seed index
 			//seed data
 		}
@@ -193,14 +196,21 @@ const answers = {
 	view: 'None',
 	utilities: ['Session'],
 	models: [
+		{model: 'user', userProperties: [
+			'id',
+			'username',
+			'email',
+			'password',
+			'bcrypt',
+			'login routes'
+		]},
 		{model: 'post'},
-		{model: 'coMMENT  '},
-		{model: 'UPvote  '}
+		{model: 'comment'}
 	],
 	projectName: 'deck-builder'
 }
 
-// generateFiles(answers);
+generateFiles(answers);
 
 
 

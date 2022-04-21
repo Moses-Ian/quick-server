@@ -1,5 +1,3 @@
-const { writeFile } = require('../utils/write');
-
 let sequelize = (name) => 
 `const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
@@ -28,8 +26,6 @@ module.exports = ${name};`;
 
 
 let sequelizeUser = ({model, userProperties}) => {
-	console.log(model);
-	console.log(userProperties);
 	const outArr = [
 `const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');`,
@@ -123,7 +119,7 @@ module.exports = User;`
 	return output;
 };
 
-let writeModelIndex = (dest, models) => {
+let getIndex = (models) => {
 	let output = '';
 	for (let i=0; i<models.length; i++)
 		output += `const ${models[i].model} = require('./${models[i].model});` + '\n';
@@ -134,11 +130,11 @@ let writeModelIndex = (dest, models) => {
 		output += `${models[models.length-1].model}`
 	output += ' };';
 	
-	writeFile(dest, output);
+	return output;
 }
 
 module.exports = {
 	sequelize,
 	sequelizeUser,
-	writeModelIndex
+	getIndex
 };
