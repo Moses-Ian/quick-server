@@ -53,6 +53,12 @@ function generateFiles(answers) {
 		if (answers.view === 'Handlebars')
 			serverOut += server.handlebars;
 		serverOut += server.express2;
+		if (answers.utilities.includes('Session')) {
+			serverOut += server.session;
+			if (answers.orm === 'sequelize')
+				serverOut += server.sessionSequelize;
+			serverOut += server.session2;
+		}
 		serverOut += server.express3;
 		if (answers.view !== 'None')
 			serverOut += server.html;

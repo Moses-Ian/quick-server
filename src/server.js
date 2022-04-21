@@ -35,20 +35,26 @@ const express2 =
 const app = express();
 const PORT = process.env.PORT || 3001;`;
 
+const session =
+`
 
-/*
 const sess = {
   secret: 'Super secret secret',
   cookie: {},
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: true`;
+	
+const sessionSequelize = `,
   store: new SequelizeStore({
     db: sequelize
-  })
+  })`;
+
+const session2 = 
+`
 };
 
-app.use(session(sess));
-*/
+app.use(session(sess));`;
+
 
 const express3 =
 `
@@ -111,5 +117,8 @@ module.exports = {
 	mongoose,
 	html,
 	handlebars,
-	handlebars2
+	handlebars2,
+	session,
+	session2,
+	sessionSequelize
 };
