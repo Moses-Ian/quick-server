@@ -62,7 +62,15 @@ const addPageQuestion = [
 	{
 		type: 'input',
 		name: 'page',
-		message: 'What is the title of a page you would like to add?\n (Leave blank when done adding pages)'
+		message: 'What is the title of a PAGE you would like to add?\n (Leave blank when done adding pages)'
+	}
+];
+
+const addModelQuestion = [
+	{
+		type: 'input',
+		name: 'model',
+		message: 'What is the name of a MODEL you would like to add?\n (Leave blank when done adding models)'
 	}
 ];
 
@@ -78,6 +86,18 @@ promptUser()
 			if (pageAnswer.page === '')
 				break;
 			answers.pages.push(pageAnswer);
+		}
+		return answers;
+	})
+	.then(async answers => {
+		if (answers.database === 'None')
+			return answers;
+		answers.models = [];
+		while(true) {
+			let modelAnswer = await inquirer.prompt(addModelQuestion);
+			if (modelAnswer.model === '')
+				break;
+			answers.models.push(modelAnswer);
 		}
 		return answers;
 	})
