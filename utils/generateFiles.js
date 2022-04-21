@@ -52,12 +52,17 @@ function generateFiles(answers) {
 			serverOut += server.mongoose;
 		if (answers.view === 'Handlebars')
 			serverOut += server.handlebars;
-		serverOut += server.express2;
 		if (answers.utilities.includes('Session')) {
-			serverOut += server.session;
+			server.Out += server.session;
 			if (answers.orm === 'sequelize')
 				serverOut += server.sessionSequelize;
+		}
+		serverOut += server.express2;
+		if (answers.utilities.includes('Session')) {
 			serverOut += server.session2;
+			if (answers.orm === 'sequelize')
+				serverOut += server.sessionSequelize2;
+			serverOut += server.session3;
 		}
 		serverOut += server.express3;
 		if (answers.view !== 'None')

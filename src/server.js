@@ -24,10 +24,13 @@ const handlebars =
 `
 const exphbs = require('express-handlebars');`
 
-/*
-const session = require('express-session');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
-*/
+const session = 
+`
+const session = require('express-session');`
+
+const sessionSequelize =
+`
+const SequelizeStore = require('connect-session-sequelize')(session.Store);`;
 
 const express2 =
 `
@@ -35,7 +38,7 @@ const express2 =
 const app = express();
 const PORT = process.env.PORT || 3001;`;
 
-const session =
+const session2 =
 `
 
 const sess = {
@@ -44,12 +47,12 @@ const sess = {
   resave: false,
   saveUninitialized: true`;
 	
-const sessionSequelize = `,
+const sessionSequelize2 = `,
   store: new SequelizeStore({
     db: sequelize
   })`;
 
-const session2 = 
+const session3 = 
 `
 };
 
@@ -120,5 +123,7 @@ module.exports = {
 	handlebars2,
 	session,
 	session2,
-	sessionSequelize
+	session3,
+	sessionSequelize,
+	sessionSequelize2
 };
