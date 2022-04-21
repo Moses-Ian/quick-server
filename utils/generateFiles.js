@@ -4,6 +4,7 @@ const server = require('../src/server');
 const connection = require('../src/connection');
 const dbFile = require('../src/db');
 const indexHTMLFile = require('../src/index-html.js');
+const modelFile = require('../src/model.js');
 
 const dist = './dist';
 const src = './src';
@@ -17,19 +18,23 @@ function generateFiles(answers) {
 	answers.projectName = 'deck-builder';
 	//end develop
 	console.log(answers);
+	console.log(answers.models[0].userProperties);
 	
 	const dir = `${dist}/${answers.projectName}`;
 	const name = answers.projectName.split(/[-_]/).map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
 	const db = answers.projectName.split('-').join('_').concat('_db');
 	const view = `${dir}/views`;
+	const model = `${dir}/models`;
 	
 	// create the output directory
+	//==================================================================
 	// if (!fs.existsSync(dist))
 		// fs.mkdirSync(dist);
 	// fs.rmdirSync(dir, { recursive: true });
 	// fs.mkdirSync(dir)
 	
 	// create .gitignore, README.md, .env, helpers
+	//==================================================================
 	copyFile(`${src}/${gitignore}`, `${dir}/${gitignore}`);
 	writeFile(`${dir}/${readme}`, `# ${name}`);
 	if (answers.database !== 'None') {
@@ -39,6 +44,7 @@ function generateFiles(answers) {
 	copyFile(`${src}/helpers.js`, `${dir}/utils/helpers.js`);
 	
 	// create server.js
+	//==================================================================
 	let serverOut = '';
 	if (answers.server === 'Express') {
 		serverOut += server.express;
@@ -81,6 +87,7 @@ function generateFiles(answers) {
 	writeFile(`${dir}/server.js`, serverOut);
 
 	// create connection.js
+	//==================================================================
 	// fs.mkdirSync(`${dir}/config`);
 	// fs.mkdirSync(`${dir}/db`);
 	let connectionOut = '';
@@ -98,7 +105,8 @@ function generateFiles(answers) {
 	
 	writeFile(`${dir}/config/connection.js`, connectionOut);
 	
-	//output default html
+	//output view
+	//==================================================================
 	if (answers.view !== 'None') {
 		// fs.mkdirSync(`${dir}/public`);
 		// fs.mkdirSync(`${dir}/public/assets`);
@@ -119,25 +127,80 @@ function generateFiles(answers) {
 		answers.pages.forEach(page => writeFile(`${dir}/views/${page.page}.handlebars`, ''));
 	}
 	
-	// output model files
+	// output model
+	//==================================================================
+	let userModel = {};
+	if (answers.database !== 'None') {
+		// fs.mkdirSync(`${dir}/models`);
+		// fs.mkdirSync(`${dir}/db/seeds`);
+		for(let i=0; i<answers.models.length; i++) {
+			answers.models[i].model = answers.models[i].model.trim().toLowerCase();
+			answers.models[i].model = answers.models[i].model[0].toUpperCase() + answers.models[i].model.slice(1);
+			if (answers.models[i].model === 'User') {
+				userModel = answers.models[i];
+				answers.models.splice(i, 1);
+				i--;
+			}
+		}
+	}
 	if (answers.database === 'MySQL') {
 		if (answers.orm === 'sequelize') {
-			
+			//base
+			answers.models.forEach(m => 
+				writeFile(`${model}/${m.model}.js`, modelFile.sequelize(m.model)));
+			//user
+			if (userModel)
+				writeFile(`${model}/User.js`, modelFile.sequelizeUser(userModel));
+			//index
+			answers.models.unshift(userModel);
+			modelFile.writeModelIndex(`${model}/index.js`, answers.models);
+			//seed index
+			//seed data
 		} else {
-			
+			//index
+			//base
+			//user
+			//seed index
+			//seed data
 		}
 	}
 	if (answers.database === 'MongoDB') {
 		if (answers.odm === 'mongoose') {
-			
+			//index
+			//base
+			//user
+			//seed index
+			//seed data
 		} else {
-			
+			//index
+			//base
+			//user
+			//seed index
+			//seed data
 		}
 	}
 	
 }
 
 
+
+// for debugging
+
+const answers = {
+	server: 'Express',
+	database: 'MySQL',
+	orm: 'sequelize',
+	view: 'None',
+	utilities: ['Session'],
+	models: [
+		{model: 'post'},
+		{model: 'coMMENT  '},
+		{model: 'UPvote  '}
+	],
+	projectName: 'deck-builder'
+}
+
+// generateFiles(answers);
 
 
 
