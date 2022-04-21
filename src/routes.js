@@ -71,9 +71,94 @@ router.get('/', (req, res) => {`;
 	return output;
 }
 
+modelRoute = ({model, ...props}) => {
+	let output = router;
+	output +=
+`
+const {
+  getAll${model},
+  get${model}ById,
+  create${model},
+  update${model},
+  delete${model}`;
+	if (model === 'User' && props.userProperties.includes('login routes'))
+		output +=
+`,
+	login,
+	logout`;
+	output +=
+`
+} = require('../../controllers/${model.toLowerCase()}-controller');
+
+// /api/${model.toLowerCase()}
+router
+  .route('/')
+  .get(getAll${model})
+  .post(create${model});
+
+// /api/${model.toLowerCase()}/:id
+router
+  .route('/:id')
+  .get(get${model}ById)
+  .put(update${model})
+  .delete(delete${model});`;
+	if (model === 'User' && props.userProperties.includes('login routes'))
+		output +=
+`
+
+router
+	.route('/login')
+	.post(login);
+	
+router
+	.route('/logout')
+	.post(logout)`;
+	output += exp;
+	
+	return output;
+}
+
 module.exports = {
 	routesIndex,
 	apiIndex,
 	htmlIndex,
-	pageRoute
+	pageRoute,
+	modelRoute
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

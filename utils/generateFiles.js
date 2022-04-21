@@ -199,6 +199,7 @@ function generateFiles(answers) {
 		// fs.mkdirSync(`${dir}/routes/api`);
 		writeFile(`${dir}/routes/api/index.js`, routeFile.apiIndex(answers.models));
 		// model-routes.js
+		answers.models.forEach(m => writeFile(`${dir}/routes/api/${m.model}-routes.js`, routeFile.modelRoute(m)));
 	}
 	if (answers.view !== 'None') {
 		// fs.mkdirSync(`${dir}/routes/html`);
