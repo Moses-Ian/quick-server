@@ -6,6 +6,7 @@ const dbFile = require('../src/db');
 const indexHTMLFile = require('../src/index-html.js');
 const modelFile = require('../src/model.js');
 const seedFile = require('../src/seeds.js');
+const routeFile = require('../src/routes.js');
 
 const dist = './dist';
 const src = './src';
@@ -114,6 +115,7 @@ function generateFiles(answers) {
 		// fs.mkdirSync(`${dir}/public/assets/js`);
 		copyFile(`${src}/style.css`, `${dir}/public/assets/css/style.css`);
 		copyFile(`${src}/script.js`, `${dir}/public/assets/js/script.js`);
+		answers.pages.forEach(p => p.page = p.page.trim().toLowerCase());
 	}
 	if (answers.view === 'HTML') {
 		writeFile(`${dir}/public/index.html`, indexHTMLFile.html(name));
@@ -189,6 +191,42 @@ function generateFiles(answers) {
 		}
 	}
 	
+	// output routes
+	//==================================================================
+	// fs.mkdirSync(`${dir}/routes`);
+	writeFile(`${dir}/routes/index.js`, routeFile.routesIndex(answers));
+	if (answers.database !== 'None') {
+		// fs.mkdirSync(`${dir}/routes/api`);
+		writeFile(`${dir}/routes/api/index.js`, routeFile.apiIndex(answers.models));
+		// model-routes.js
+	}
+	if (answers.view !== 'None') {
+		// fs.mkdirSync(`${dir}/routes/html`);
+		writeFile(`${dir}/routes/html/index.js`, routeFile.htmlIndex(answers.pages));
+		answers.pages.forEach(p => writeFile(`${dir}/routes/html/${p.page}-routes.js`, routeFile.pageRoute(p.page, answers.view)));
+		writeFile(`${dir}/routes/html/home-routes.js`, routeFile.pageRoute('index', answers.view));
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+	// output controllers
+	//==================================================================
+
 }
 
 
@@ -199,7 +237,7 @@ const answers = {
 	server: 'Express',
 	database: 'MongoDB',
 	odm: 'mongoose',
-	view: 'None',
+	view: 'HTML',
 	utilities: ['Session'],
 	models: [
 		{model: 'user', userProperties: [
@@ -212,6 +250,10 @@ const answers = {
 		]},
 		{model: 'post'},
 		{model: 'comment'}
+	],
+	pages: [
+		{page: 'dashboard'},
+		{page: 'contact'}
 	],
 	projectName: 'deck-builder'
 }
