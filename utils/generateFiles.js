@@ -3,6 +3,7 @@ const {writeFile, copyFile, appendFile, readThenWrite} = require('./write');
 const server = require('../src/server');
 const connection = require('../src/connection');
 const dbFile = require('../src/db');
+const indexHTMLFile = require('../src/index-html.js');
 
 const dist = './dist';
 const src = './src';
@@ -13,19 +14,20 @@ const env = '.env';
 
 function generateFiles(answers) {
 	//develop
-	// answers.projectName = 'deck-builder';
+	answers.projectName = 'deck-builder';
 	//end develop
 	console.log(answers);
 	
 	const dir = `${dist}/${answers.projectName}`;
 	const name = answers.projectName.split(/[-_]/).map(word => word[0].toUpperCase() + word.slice(1)).join(' ');
 	const db = answers.projectName.split('-').join('_').concat('_db');
+	const view = `${dir}/views`;
 	
 	// create the output directory
-	if (!fs.existsSync(dist))
-		fs.mkdirSync(dist);
-	fs.rmdirSync(dir, { recursive: true });
-	fs.mkdirSync(dir)
+	// if (!fs.existsSync(dist))
+		// fs.mkdirSync(dist);
+	// fs.rmdirSync(dir, { recursive: true });
+	// fs.mkdirSync(dir)
 	
 	// create .gitignore, README.md, .env, helpers
 	copyFile(`${src}/${gitignore}`, `${dir}/${gitignore}`);
@@ -33,7 +35,7 @@ function generateFiles(answers) {
 	if (answers.database !== 'None') {
 		readThenWrite(`${src}/${env}`, `${dir}/${env}`, db);
 	}
-	fs.mkdirSync(`${dir}/utils`);
+	// fs.mkdirSync(`${dir}/utils`);
 	copyFile(`${src}/helpers.js`, `${dir}/utils/helpers.js`);
 	
 	// create server.js
@@ -58,20 +60,12 @@ function generateFiles(answers) {
 		if (answers.database === 'MySQL' && answers.orm === 'sequelize')
 			serverOut += server.sequelize2
 	}
-	
-
-
 
 	writeFile(`${dir}/server.js`, serverOut);
 
-
-
-
-
-
 	// create connection.js
-	fs.mkdirSync(`${dir}/config`);
-	fs.mkdirSync(`${dir}/db`);
+	// fs.mkdirSync(`${dir}/config`);
+	// fs.mkdirSync(`${dir}/db`);
 	let connectionOut = '';
 	if (answers.database === 'MySQL') {
 		if (answers.orm === 'None')
@@ -84,17 +78,78 @@ function generateFiles(answers) {
 		connectionOut = connection.mongo(db);
 	if (answers.database === 'MongoDB' && answers.odm === 'mongoose')
 		connectionOut = connection.mongoose(db);
-		
-	
-	
 	
 	writeFile(`${dir}/config/connection.js`, connectionOut);
 	
-	
-	
-	
+	//output default html
+	if (answers.view !== 'None') {
+		// fs.mkdirSync(`${dir}/public`);
+		// fs.mkdirSync(`${dir}/public/assets`);
+		// fs.mkdirSync(`${dir}/public/assets/css`);
+		// fs.mkdirSync(`${dir}/public/assets/js`);
+		copyFile(`${src}/style.css`, `${dir}/public/assets/css/style.css`);
+		copyFile(`${src}/script.js`, `${dir}/public/assets/js/script.js`);
+	}
+	if (answers.view === 'HTML') 
+		writeFile(`${dir}/public/index.html`, indexHTMLFile.html(name));
+	if (answers.view === 'Handlebars') {
+		fs.mkdirSync(view);
+		fs.mkdirSync(`${view}/layouts`);
+		fs.mkdirSync(`${view}/partials`);
+		writeFile(`${view}/layouts/main.handlebars`, indexHTMLFile.handlebars(name));
+	}
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = generateFiles;
