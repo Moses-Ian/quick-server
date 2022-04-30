@@ -17,8 +17,8 @@ const questions = [
 		type: 'list',
 		name: 'server',
 		message: 'What server would you like to use?',
-		choices: ['Express'],
-		default: 'Express'
+		choices: ['Express', 'None'],
+		default: 'None'
 	},
 	{
 		type: 'list',

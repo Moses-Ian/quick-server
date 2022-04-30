@@ -4,6 +4,7 @@ const server = require('../src/server');
 const connection = require('../src/connection');
 const dbFile = require('../src/db');
 const indexHTMLFile = require('../src/index-html.js');
+const serviceWorker = require('../src/service-worker.js');
 const modelFile = require('../src/model.js');
 const seedFile = require('../src/seeds.js');
 const routeFile = require('../src/routes.js');
@@ -118,15 +119,33 @@ function generateFiles(answers) {
 		answers.pages.forEach(p => p.page = p.page.trim().toLowerCase());
 	}
 	if (answers.view === 'HTML') {
-		writeFile(`${dir}/public/index.html`, indexHTMLFile.html(name));
+		let viewOut = indexHTMLFile.html(name);
+		viewOut += answers.utilities.includes('Service Worker') ? indexHTMLFile.serviceWorker : '';
+		viewOut += indexHTMLFile.endTag;
+		
+		
+		
+		writeFile(`${dir}/public/index.html`, viewOut);
 		answers.pages.forEach(page =>	writeFile(`${dir}/public/${page.page}.html`, indexHTMLFile.html(name)));
+		answers.pages.unshift({page: 'index'});
+		answers.pages.forEach(page => page.page += '.html');
+		writeFile(`${dir}/service-worker.js`, serviceWorker(answers.projectName, answers.pages));
 	}
 	if (answers.view === 'Handlebars') {
 		// fs.mkdirSync(view);
 		// fs.mkdirSync(`${view}/layouts`);
 		// fs.mkdirSync(`${view}/partials`);
-		writeFile(`${view}/layouts/main.handlebars`, indexHTMLFile.handlebars(name));
+		let viewOut = indexHTMLFile.handlebars(name);
+		viewOut += answers.utilities.includes('Service Worker') ? indexHTMLFile.serviceWorker : '';
+		viewOut += indexHTMLFile.endTag;
+		
+		
+		
+		
+		
+		writeFile(`${view}/layouts/main.handlebars`, viewOut);
 		answers.pages.forEach(page => writeFile(`${dir}/views/${page.page}.handlebars`, ''));
+		writeFile(`${dir}/service-worker.js`, serviceWorker(answers.projectName, []));
 	}
 	
 	// output model
@@ -259,7 +278,7 @@ const answers = {
 	projectName: 'deck-builder'
 }
 
-generateFiles(answers);
+// generateFiles(answers);
 
 
 

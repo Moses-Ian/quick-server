@@ -14,8 +14,7 @@ const html = (name) =>
 
     <!-- Optional JavaScript -->
 		<script src="./assets/js/script.js"></script>		
-  </body>
-</html>`;
+  </body>`;
 
 const handlebars = (name) =>
 `<!DOCTYPE html>
@@ -43,11 +42,29 @@ const handlebars = (name) =>
     </footer>
   </div>
 
-</body>
+</body>`;
 
+const serviceWorker = 
+`
+
+	<script>
+	(function() {
+		if("serviceWorker" in navigator) {
+			navigator.serviceWorker.register("./service-worker.js")
+				.then(() => console.log("Service Worker registered successfully."))
+				.catch(error => console.log("Service Worker registration failed:", error));
+		}
+	})();
+	</script>
+`;
+
+const endTag =
+`
 </html>`;
 
 module.exports = {
 	html,
-	handlebars
+	handlebars,
+	endTag,
+	serviceWorker
 }
