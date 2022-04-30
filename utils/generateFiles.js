@@ -10,6 +10,7 @@ const serviceWorker = require('../src/service-worker.js');
 const modelFile = require('../src/model.js');
 const seedFile = require('../src/seeds.js');
 const routeFile = require('../src/routes.js');
+const controller = require('../src/controller.js');
 
 const dist = './dist';
 const src = './src';
@@ -20,7 +21,7 @@ const env = '.env';
 
 function generateFiles(answers) {
 	//develop
-	answers.projectName = 'deck-builder';
+	// answers.projectName = 'deck-builder';
 	//end develop
 	console.log(answers);
 	
@@ -32,19 +33,20 @@ function generateFiles(answers) {
 	
 	// create the output directory
 	//==================================================================
-	// if (!fs.existsSync(dist))
-		// fs.mkdirSync(dist);
-	// fs.rmdirSync(dir, { recursive: true });
-	// fs.mkdirSync(dir)
+	if (!fs.existsSync(dist))
+		fs.mkdirSync(dist);
+	if (fs.existsSync(dir))
+		fs.rmSync(dir, { recursive: true });
+	fs.mkdirSync(dir)
 	
 	// create .gitignore, README.md, .env, helpers
 	//==================================================================
 	copyFile(`${src}/${gitignore}`, `${dir}/${gitignore}`);
 	writeFile(`${dir}/${readme}`, `# ${name}`);
 	if (answers.database !== 'None') {
-		readThenWrite(`${src}/${env}`, `${dir}/${env}`, db);
+		readThenWrite(`${src}/sample.env`, `${dir}/.env`, db);
 	}
-	// fs.mkdirSync(`${dir}/utils`);
+	fs.mkdirSync(`${dir}/utils`);
 	copyFile(`${src}/helpers.js`, `${dir}/utils/helpers.js`);
 	
 	// create server.js
@@ -92,8 +94,8 @@ function generateFiles(answers) {
 
 	// create connection.js
 	//==================================================================
-	// fs.mkdirSync(`${dir}/config`);
-	// fs.mkdirSync(`${dir}/db`);
+	fs.mkdirSync(`${dir}/config`);
+	fs.mkdirSync(`${dir}/db`);
 	let connectionOut = '';
 	if (answers.database === 'MySQL') {
 		if (answers.orm === 'None')
@@ -109,6 +111,15 @@ function generateFiles(answers) {
 	
 	writeFile(`${dir}/config/connection.js`, connectionOut);
 	
+
+	if (answers.view !== 'None' || answers.utilities.includes('IndexedDB') || answers.utilities.includes('PWA'))
+		fs.mkdirSync(`${dir}/public`);
+	
+	if (answers.view !== 'None' || answers.utilities.includes('IndexedDB')) {
+		fs.mkdirSync(`${dir}/public/assets`);
+		fs.mkdirSync(`${dir}/public/assets/js`);
+	}
+	
 	// output indexedDB
 	//==================================================================
 	if (answers.utilities.includes('IndexedDB')) {
@@ -121,25 +132,19 @@ function generateFiles(answers) {
 		writeFile(`${dir}/public/manifest.json`, manifest(name));
 	}
 
-
-
-	
 	//output view
 	//==================================================================
 	if (answers.view !== 'None') {
-		// fs.mkdirSync(`${dir}/public`);
-		// fs.mkdirSync(`${dir}/public/assets`);
-		// fs.mkdirSync(`${dir}/public/assets/css`);
-		// fs.mkdirSync(`${dir}/public/assets/js`);
+		fs.mkdirSync(`${dir}/public/assets/css`);
 		copyFile(`${src}/style.css`, `${dir}/public/assets/css/style.css`);
 		copyFile(`${src}/script.js`, `${dir}/public/assets/js/script.js`);
 		answers.pages.forEach(p => p.page = p.page.trim().toLowerCase());
 	}
 	if (answers.view === 'HTML' || answers.view === 'Handlebars') {
 		if (answers.view === 'Handlebars') {
-			// fs.mkdirSync(view);
-			// fs.mkdirSync(`${view}/layouts`);
-			// fs.mkdirSync(`${view}/partials`);
+			fs.mkdirSync(view);
+			fs.mkdirSync(`${view}/layouts`);
+			fs.mkdirSync(`${view}/partials`);
 		}
 		let viewOut = indexHTMLFile.head;
 		if (answers.utilities.includes('PWA'))
@@ -181,8 +186,8 @@ function generateFiles(answers) {
 	//==================================================================
 	let userModel = {};
 	if (answers.database !== 'None') {
-		// fs.mkdirSync(`${dir}/models`);
-		// fs.mkdirSync(`${dir}/db/seeds`);
+		fs.mkdirSync(`${dir}/models`);
+		fs.mkdirSync(`${dir}/db/seeds`);
 		for(let i=0; i<answers.models.length; i++) {
 			answers.models[i].model = answers.models[i].model.trim().toLowerCase();
 			answers.models[i].model = answers.models[i].model[0].toUpperCase() + answers.models[i].model.slice(1);
@@ -199,10 +204,11 @@ function generateFiles(answers) {
 			answers.models.forEach(m => 
 				writeFile(`${model}/${m.model}.js`, modelFile.sequelize(m.model)));
 			//user
-			if (userModel)
+			if ('model' in userModel) {
 				writeFile(`${model}/User.js`, modelFile.sequelizeUser(userModel));
+				answers.models.unshift(userModel);
+			}
 			//index
-			answers.models.unshift(userModel);
 			writeFile(`${model}/index.js`, modelFile.getIndex(answers.models));
 			//seed index
 			writeFile(`${dir}/db/seeds/index.js`, seedFile.sequelizeIndex(answers.models));
@@ -223,10 +229,11 @@ function generateFiles(answers) {
 			answers.models.forEach(m => 
 				writeFile(`${model}/${m.model}.js`, modelFile.mongoose(m.model)));
 			//user
-			if (userModel)
+			if ('model' in userModel) {
 				writeFile(`${model}/User.js`, modelFile.mongooseUser(userModel));
+				answers.models.unshift(userModel);
+			}
 			//index
-			answers.models.unshift(userModel);
 			writeFile(`${model}/index.js`, modelFile.getIndex(answers.models));
 			//seed index
 			//seed data
@@ -241,16 +248,16 @@ function generateFiles(answers) {
 	
 	// output routes
 	//==================================================================
-	// fs.mkdirSync(`${dir}/routes`);
+	fs.mkdirSync(`${dir}/routes`);
 	writeFile(`${dir}/routes/index.js`, routeFile.routesIndex(answers));
 	if (answers.database !== 'None') {
-		// fs.mkdirSync(`${dir}/routes/api`);
+		fs.mkdirSync(`${dir}/routes/api`);
 		writeFile(`${dir}/routes/api/index.js`, routeFile.apiIndex(answers.models));
 		// model-routes.js
 		answers.models.forEach(m => writeFile(`${dir}/routes/api/${m.model}-routes.js`, routeFile.modelRoute(m)));
 	}
 	if (answers.view !== 'None') {
-		// fs.mkdirSync(`${dir}/routes/html`);
+		fs.mkdirSync(`${dir}/routes/html`);
 		writeFile(`${dir}/routes/html/index.js`, routeFile.htmlIndex(answers.pages));
 		answers.pages.forEach(p => writeFile(`${dir}/routes/html/${p.page}-routes.js`, routeFile.pageRoute(p.page, answers.view)));
 		writeFile(`${dir}/routes/html/home-routes.js`, routeFile.pageRoute('index', answers.view));
@@ -275,37 +282,39 @@ function generateFiles(answers) {
 	
 	// output controllers
 	//==================================================================
-
+	fs.mkdirSync(`${dir}/controllers`);
+	answers.models.forEach(model => 
+		writeFile(`${dir}/controllers/${model.model}-controller.js`, controller(model, answers)));
 }
 
 
 
 // for debugging
 
-const answers = {
-	server: 'Express',
-	database: 'MongoDB',
-	odm: 'mongoose',
-	view: 'HTML',
-	utilities: ['Session'],
-	models: [
-		{model: 'user', userProperties: [
-			'id',
-			'username',
-			'email',
-			'password',
-			'bcrypt',
-			'login routes'
-		]},
-		{model: 'post'},
-		{model: 'comment'}
-	],
-	pages: [
-		{page: 'dashboard'},
-		{page: 'contact'}
-	],
-	projectName: 'deck-builder'
-}
+// const answers = {
+	// server: 'Express',
+	// database: 'MongoDB',
+	// odm: 'mongoose',
+	// view: 'HTML',
+	// utilities: ['Session'],
+	// models: [
+		// {model: 'user', userProperties: [
+			// 'id',
+			// 'username',
+			// 'email',
+			// 'password',
+			// 'bcrypt',
+			// 'login routes'
+		// ]},
+		// {model: 'post'},
+		// {model: 'comment'}
+	// ],
+	// pages: [
+		// {page: 'dashboard'},
+		// {page: 'contact'}
+	// ],
+	// projectName: 'deck-builder'
+// }
 
 // generateFiles(answers);
 
