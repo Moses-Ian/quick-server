@@ -4,6 +4,7 @@ const server = require('../src/server');
 const connection = require('../src/connection');
 const dbFile = require('../src/db');
 const indexedDB = require('../src/idb.js');
+const manifest = require('../src/manifest.js');
 const indexHTMLFile = require('../src/index-html.js');
 const serviceWorker = require('../src/service-worker.js');
 const modelFile = require('../src/model.js');
@@ -114,6 +115,12 @@ function generateFiles(answers) {
 		writeFile(`${dir}/public/assets/js/idb.js`, indexedDB(answers.projectName, answers.idbName));
 	}
 
+	// output manifest.json
+	//==================================================================
+	if (answers.utilities.includes('PWA')) {
+		writeFile(`${dir}/public/manifest.json`, manifest(name));
+	}
+
 
 
 	
@@ -128,18 +135,35 @@ function generateFiles(answers) {
 		copyFile(`${src}/script.js`, `${dir}/public/assets/js/script.js`);
 		answers.pages.forEach(p => p.page = p.page.trim().toLowerCase());
 	}
-	if (answers.view === 'HTML') {
-		let viewOut = indexHTMLFile.html(name);
+	if (answers.view === 'HTML' || answers.view === 'Handlebars') {
+		if (answers.view === 'Handlebars') {
+			// fs.mkdirSync(view);
+			// fs.mkdirSync(`${view}/layouts`);
+			// fs.mkdirSync(`${view}/partials`);
+		}
+		let viewOut = indexHTMLFile.head;
+		if (answers.utilities.includes('PWA'))
+			viewOut += indexHTMLFile.manifest;
+		if (answers.view === 'HTML')
+			viewOut += indexHTMLFile.html(name);
+		if (answers.view === 'Handlebars')
+			viewOut += indexHTMLFile.handlebars(name);
 		if (answers.utilities.includes('IndexedDB'))
 			viewOut += indexHTMLFile.idb;
 		viewOut += indexHTMLFile.endBody;
 		if (answers.utilities.includes('Service Worker'))
 			viewOut += indexHTMLFile.serviceWorker;
 		viewOut += indexHTMLFile.endTag;
-		
-		
-		
-		writeFile(`${dir}/public/index.html`, viewOut);
+
+		let viewFile = answers.view === 'HTML' ?
+			`${dir}/public/index.html` : `${view}/layouts/main.handlebars`;
+		writeFile(viewFile, viewOut);
+	}
+	
+	
+	
+	
+	if (answers.view === 'HTML') {
 		answers.pages.forEach(page =>	writeFile(`${dir}/public/${page.page}.html`, indexHTMLFile.html(name)));
 		if (answers.utilities.includes('Service Worker')) {
 			answers.pages.unshift({page: 'index'});
@@ -148,22 +172,6 @@ function generateFiles(answers) {
 		}
 	}
 	if (answers.view === 'Handlebars') {
-		// fs.mkdirSync(view);
-		// fs.mkdirSync(`${view}/layouts`);
-		// fs.mkdirSync(`${view}/partials`);
-		let viewOut = indexHTMLFile.handlebars(name);
-		if (answers.utilities.includes('IndexedDB'))
-			viewOut += indexHTMLFile.idb;
-		viewOut += indexHTMLFile.endBody;
-		if (answers.utilities.includes('Service Worker'))
-			viewOut += indexHTMLFile.serviceWorker;
-		viewOut += indexHTMLFile.endTag;
-		
-		
-		
-		
-		
-		writeFile(`${view}/layouts/main.handlebars`, viewOut);
 		answers.pages.forEach(page => writeFile(`${dir}/views/${page.page}.handlebars`, ''));
 		if (answers.utilities.includes('Service Worker'))
 			writeFile(`${dir}/service-worker.js`, serviceWorker(answers.projectName, []));

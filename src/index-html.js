@@ -1,12 +1,17 @@
-const html = (name) => 
+const head =  
 `<!doctype html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="stylesheet" href="./assets/css/style.css" />
-	
+		<link rel="stylesheet" href="./assets/css/style.css" />`;
+
+const manifest =
+`
+		<link rel="manifest" href="manifest.json">`;
+		
+const html = (name) =>
+`	
     <title>${name}</title>
   </head>
   <body>
@@ -15,6 +20,28 @@ const html = (name) =>
     <!-- Optional JavaScript -->
 		<script src="./assets/js/script.js"></script>`;
 		
+const handlebars = (name) =>
+`
+		<title>${name}</title>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<header>
+				<h1>
+					<a href="/">${name}</a>
+				</h1>
+			</header>
+			<main>
+				{{{ body }}}
+			</main>
+			<footer>
+				Thanks for visiting!
+			</footer>
+		</div>
+
+		<script src="./assets/js/script.js"></script>`;
+
 const idb =
 `
 		<script src="./assets/js/idb.js"></script>`;
@@ -22,35 +49,6 @@ const idb =
 const endBody =
 `
   </body>`;
-
-const handlebars = (name) =>
-`<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${name}</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
-
-<body>
-  <div class="wrapper">
-    <header>
-      <h1>
-        <a href="/">${name}</a>
-      </h1>
-    </header>
-    <main>
-      {{{ body }}}
-    </main>
-    <footer>
-      Thanks for visiting!
-    </footer>
-  </div>
-
-    <!-- Optional JavaScript -->
-		<script src="./assets/js/script.js"></script>`;
 
 const serviceWorker = 
 `
@@ -71,6 +69,8 @@ const endTag =
 </html>`;
 
 module.exports = {
+	head,
+	manifest,
 	html,
 	handlebars,
 	endBody,
