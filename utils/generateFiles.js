@@ -3,6 +3,7 @@ const {writeFile, copyFile, appendFile, readThenWrite} = require('./write');
 const server = require('../src/server');
 const connection = require('../src/connection');
 const dbFile = require('../src/db');
+const indexedDB = require('../src/idb.js');
 const indexHTMLFile = require('../src/index-html.js');
 const serviceWorker = require('../src/service-worker.js');
 const modelFile = require('../src/model.js');
@@ -107,6 +108,15 @@ function generateFiles(answers) {
 	
 	writeFile(`${dir}/config/connection.js`, connectionOut);
 	
+	// output indexedDB
+	//==================================================================
+	if (answers.utilities.includes('IndexedDB')) {
+		writeFile(`${dir}/public/assets/js/idb.js`, indexedDB(answers.projectName, answers.idbName));
+	}
+
+
+
+	
 	//output view
 	//==================================================================
 	if (answers.view !== 'None') {
@@ -120,23 +130,33 @@ function generateFiles(answers) {
 	}
 	if (answers.view === 'HTML') {
 		let viewOut = indexHTMLFile.html(name);
-		viewOut += answers.utilities.includes('Service Worker') ? indexHTMLFile.serviceWorker : '';
+		if (answers.utilities.includes('IndexedDB'))
+			viewOut += indexHTMLFile.idb;
+		viewOut += indexHTMLFile.endBody;
+		if (answers.utilities.includes('Service Worker'))
+			viewOut += indexHTMLFile.serviceWorker;
 		viewOut += indexHTMLFile.endTag;
 		
 		
 		
 		writeFile(`${dir}/public/index.html`, viewOut);
 		answers.pages.forEach(page =>	writeFile(`${dir}/public/${page.page}.html`, indexHTMLFile.html(name)));
-		answers.pages.unshift({page: 'index'});
-		answers.pages.forEach(page => page.page += '.html');
-		writeFile(`${dir}/service-worker.js`, serviceWorker(answers.projectName, answers.pages));
+		if (answers.utilities.includes('Service Worker')) {
+			answers.pages.unshift({page: 'index'});
+			answers.pages.forEach(page => page.page += '.html');
+			writeFile(`${dir}/service-worker.js`, serviceWorker(answers.projectName, answers.pages));
+		}
 	}
 	if (answers.view === 'Handlebars') {
 		// fs.mkdirSync(view);
 		// fs.mkdirSync(`${view}/layouts`);
 		// fs.mkdirSync(`${view}/partials`);
 		let viewOut = indexHTMLFile.handlebars(name);
-		viewOut += answers.utilities.includes('Service Worker') ? indexHTMLFile.serviceWorker : '';
+		if (answers.utilities.includes('IndexedDB'))
+			viewOut += indexHTMLFile.idb;
+		viewOut += indexHTMLFile.endBody;
+		if (answers.utilities.includes('Service Worker'))
+			viewOut += indexHTMLFile.serviceWorker;
 		viewOut += indexHTMLFile.endTag;
 		
 		
@@ -145,7 +165,8 @@ function generateFiles(answers) {
 		
 		writeFile(`${view}/layouts/main.handlebars`, viewOut);
 		answers.pages.forEach(page => writeFile(`${dir}/views/${page.page}.handlebars`, ''));
-		writeFile(`${dir}/service-worker.js`, serviceWorker(answers.projectName, []));
+		if (answers.utilities.includes('Service Worker'))
+			writeFile(`${dir}/service-worker.js`, serviceWorker(answers.projectName, []));
 	}
 	
 	// output model

@@ -13,7 +13,14 @@ const html = (name) =>
     <h1>${name}</h1>
 
     <!-- Optional JavaScript -->
-		<script src="./assets/js/script.js"></script>		
+		<script src="./assets/js/script.js"></script>`;
+		
+const idb =
+`
+		<script src="./assets/js/idb.js"></script>`;
+		
+const endBody =
+`
   </body>`;
 
 const handlebars = (name) =>
@@ -42,7 +49,8 @@ const handlebars = (name) =>
     </footer>
   </div>
 
-</body>`;
+    <!-- Optional JavaScript -->
+		<script src="./assets/js/script.js"></script>`;
 
 const serviceWorker = 
 `
@@ -65,6 +73,8 @@ const endTag =
 module.exports = {
 	html,
 	handlebars,
+	endBody,
 	endTag,
+	idb,
 	serviceWorker
 }

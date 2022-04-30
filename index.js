@@ -55,6 +55,12 @@ const questions = [
 		name: 'utilities',
 		message: 'What utilities do you want?',
 		choices: ['Session', 'IndexedDB', 'webpack', 'Service Worker', 'PWA']
+	},
+	{
+		type: 'input',
+		name: 'idbName',
+		message: "What is the name of the object you're storing in IndexedDB?",
+		when: (answers) => answers.utilities.includes('IndexedDB')
 	}
 ];
 
