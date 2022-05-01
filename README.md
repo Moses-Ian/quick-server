@@ -2,6 +2,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+This is still super broken.
+
 ## Description
 
 This package is designed to help build the boilerplate for Node servers quickly.
@@ -20,13 +22,26 @@ If your README is long, add a table of contents to make it easy for users to fin
 
 ## Installation
 
+To install with npm:
+
+Create a [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+
+Create a folder for your project.
+
+Create a file called ```.npmrc```.
+
+Insert in this file:
+
+    @Moses-Ian:registry=https://npm.pkg.github.com
+    //npm.pkg.github.com/:_authToken=<TOKEN>
+
 Install with npm:
 
     npm i -D @Moses-Ian/quick-server
 
 Create an index.js file with a require statement:
 
-    require('@Moses-Ian/quick-server')()
+    require('@Moses-Ian/quick-server')
 
 And run it:
 
