@@ -282,9 +282,11 @@ function generateFiles(answers) {
 	
 	// output controllers
 	//==================================================================
-	fs.mkdirSync(`${dir}/controllers`);
-	answers.models.forEach(model => 
-		writeFile(`${dir}/controllers/${model.model}-controller.js`, controller(model, answers)));
+	if (answers.models) {
+		fs.mkdirSync(`${dir}/controllers`);
+		answers.models.forEach(model => 
+			writeFile(`${dir}/controllers/${model.model}-controller.js`, controller(model, answers)));
+	}
 }
 
 
