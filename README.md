@@ -22,15 +22,15 @@ If your README is long, add a table of contents to make it easy for users to fin
 
 Install with npm:
 
-        npm i -D @Moses-Ian/quick-server
+    npm i -D @Moses-Ian/quick-server
 
 Create an index.js file with a require statement:
 
-        require('@Moses-Ian/quick-server')()
+    require('@Moses-Ian/quick-server')()
 
 And run it:
 
-        node index
+    node index
 
 ## Usage
 
