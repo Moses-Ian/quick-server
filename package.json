@@ -1,6 +1,9 @@
 {
-  "name": "quick-server",
+  "name": "@Moses-Ian/quick-server",
   "version": "1.0.0",
+  "repository": {
+	"url": "git://github.com/Moses-Ian/quick-server.git"
+  },
   "description": "Quickly generate a server based on prompts",
   "main": "index.js",
   "scripts": {

@@ -124,7 +124,7 @@ promptUser()
 	.then(generateFiles)
 	.catch(err => console.error(err));
 	
-	
+module.exports = promptUser;
 	
 	
 	
