@@ -41,7 +41,7 @@ Install with npm:
 
 Create an index.js file with a require statement:
 
-    require('@Moses-Ian/quick-server')()
+    require('@Moses-Ian/quick-server')
 
 And run it:
 
