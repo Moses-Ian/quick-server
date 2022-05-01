@@ -20,6 +20,19 @@ If your README is long, add a table of contents to make it easy for users to fin
 
 ## Installation
 
+To install with npm:
+
+Create a [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+
+Create a folder for your project.
+
+Create a file called ```.npmrc```.
+
+Insert in this file:
+
+    @Moses-Ian:registry=https://npm.pkg.github.com
+    //npm.pkg.github.com/:_authToken=<TOKEN>
+
 Install with npm:
 
     npm i -D @Moses-Ian/quick-server
